@@ -9,7 +9,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
@@ -38,5 +38,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
