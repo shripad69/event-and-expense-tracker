@@ -11,11 +11,11 @@ jobs:
 
     steps:
 
-    # 🔹 1. Checkout repo
+    # 🔹 1. Checkout
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 🔹 2. Create frontend env (for Nginx)
+    # 🔹 2. Create frontend env
     - name: Create frontend .env
       run: |
         echo "VITE_API_URL=/api" > frontend/.env
@@ -28,28 +28,18 @@ jobs:
         npm install
         npm run build
 
-    # 🔹 4. Clean frontend_build on VM
-    - name: Clean frontend_build folder on VM
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_SSH_KEY }}
-        script: |
-          rm -rf ~/event-and-expense-tracker/frontend_build/*
-
-    # 🔹 5. Upload ONLY contents of dist (FIXED PROPERLY)
-    - name: Upload frontend build to VM
+    # 🔹 4. Upload FULL frontend folder (not dist)
+    - name: Upload frontend folder
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
-        source: "frontend/dist/*"
-        target: "~/event-and-expense-tracker/frontend_build"
+        source: "frontend"
+        target: "~/event-and-expense-tracker"
 
-    # 🔹 6. Deploy backend + reload Nginx
-    - name: Deploy backend on VM
+    # 🔹 5. Fix structure on VM (IMPORTANT STEP)
+    - name: Fix frontend build structure
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.VM_HOST }}
@@ -58,17 +48,27 @@ jobs:
         script: |
           cd ~/event-and-expense-tracker
 
-          echo "Pull latest code..."
+          echo "Cleaning old build..."
+          rm -rf frontend_build/*
+          
+          echo "Moving new build..."
+          cp -r frontend/dist/* frontend_build/
+
+    # 🔹 6. Deploy backend
+    - name: Deploy backend
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          cd ~/event-and-expense-tracker
+
           git pull origin main
 
-          echo "Installing backend dependencies..."
           cd backend
           npm install
 
-          echo "Restarting backend..."
           pm2 restart backend || pm2 start server.js --name backend
 
-          echo "Reloading Nginx..."
           sudo systemctl reload nginx
-
-          echo "Deployment completed successfully!"
