@@ -28,7 +28,7 @@ jobs:
         npm install
         npm run build
 
-    # 🔹 4. Upload FULL frontend folder (not dist)
+    # 🔹 4. Upload frontend folder
     - name: Upload frontend folder
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -38,7 +38,7 @@ jobs:
         source: "frontend"
         target: "~/event-and-expense-tracker"
 
-    # 🔹 5. Fix structure on VM (IMPORTANT STEP)
+    # 🔹 5. Fix frontend build structure
     - name: Fix frontend build structure
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -47,14 +47,10 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           cd ~/event-and-expense-tracker
-
-          echo "Cleaning old build..."
           rm -rf frontend_build/*
-          
-          echo "Moving new build..."
           cp -r frontend/dist/* frontend_build/
 
-    # 🔹 6. Deploy backend
+    # 🔹 6. Deploy backend (FIXED)
     - name: Deploy backend
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -64,11 +60,18 @@ jobs:
         script: |
           cd ~/event-and-expense-tracker
 
-          git pull origin main
+          echo "FORCE updating repo..."
+          git fetch origin
+          git reset --hard origin/main
 
+          echo "Installing dependencies..."
           cd backend
           npm install
 
-          pm2 restart backend || pm2 start server.js --name backend
+          echo "Restarting backend..."
+          pm2 delete backend || true
+          pm2 start server.js --name backend
+          pm2 save
 
+          echo "Reload nginx..."
           sudo systemctl reload nginx
