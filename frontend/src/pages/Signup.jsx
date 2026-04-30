@@ -21,6 +21,7 @@ import {
 const FormInput = ({
   label,
   type,
+  name, // Added name prop here
   icon: Icon,
   value,
   onChange,
@@ -51,6 +52,7 @@ const FormInput = ({
         />
         <input
           type={inputType}
+          name={name} // Added name attribute here
           value={value}
           onChange={onChange}
           onBlur={onBlur}
@@ -306,11 +308,11 @@ const Signup = () => {
             <FormInput
               label="Full Name"
               type="text"
+              name="name" // Ensures mapping to formData.name
               icon={HiOutlineUser}
               value={formData.name}
               onChange={handleChange}
               onBlur={() => {}}
-              name="name"
               placeholder="John Doe"
               required
               autoComplete="name"
@@ -326,11 +328,11 @@ const Signup = () => {
             <FormInput
               label="Email"
               type="email"
+              name="email" // Ensures mapping to formData.email
               icon={HiOutlineMail}
               value={formData.email}
               onChange={handleChange}
               onBlur={() => {}}
-              name="email"
               placeholder="you@example.com"
               required
               autoComplete="email"
@@ -346,11 +348,11 @@ const Signup = () => {
             <FormInput
               label="Password"
               type="password"
+              name="password" // Ensures mapping to formData.password
               icon={HiOutlineLockClosed}
               value={formData.password}
               onChange={handleChange}
               onBlur={() => {}}
-              name="password"
               placeholder="Min 6 characters"
               required
               autoComplete="new-password"
