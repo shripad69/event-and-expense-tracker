@@ -44,6 +44,15 @@ app.get('/api/colleges', async (req, res) => {
   }
 });
 
+// CI/CD test route
+app.get('/api/test-ci', (req, res) => {
+  res.status(200).json({
+    message: 'Backend CI/CD is working 🚀',
+    time: new Date(),
+    uptime: process.uptime()
+  });
+});
+
 // Error handler
 app.use(errorHandler);
 

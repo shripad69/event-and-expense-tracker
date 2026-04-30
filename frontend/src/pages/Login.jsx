@@ -266,7 +266,6 @@ const Login = () => {
           
         </motion.p>
       </motion.div>
-      <h1>CI/CD TEST v1</h1>
     </div>
   );
 };
