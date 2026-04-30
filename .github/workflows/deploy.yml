@@ -15,30 +15,41 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 🔹 2. Create frontend env (FIXED for Nginx)
+    # 🔹 2. Create frontend env (for Nginx)
     - name: Create frontend .env
       run: |
         echo "VITE_API_URL=/api" > frontend/.env
         echo "VITE_STRIPE_KEY=pk_test_51TI7ArLQRiOYPdzktQHYsGukTiOKo8AGpfXxU6j1SSzFwDV3GVs7T2lTxauzEtibi3oqk9ojBS3N7OfC26NqJB3b00pO4pNnIi" >> frontend/.env
 
-    # 🔹 3. Build frontend on GitHub runner
+    # 🔹 3. Build frontend
     - name: Build frontend
       run: |
         cd frontend
         npm install
         npm run build
 
-    # 🔹 4. Upload frontend build to VM
+    # 🔹 4. Clean old frontend build on VM
+    - name: Clean frontend_build folder on VM
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          rm -rf ~/event-and-expense-tracker/frontend_build/*
+
+    # 🔹 5. Upload frontend build (FIXED)
     - name: Upload frontend build to VM
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
-        source: "frontend/dist/*"
+        source: "frontend/dist/"
         target: "~/event-and-expense-tracker/frontend_build"
+        strip_components: 1
 
-    # 🔹 5. Deploy backend + reload Nginx
+    # 🔹 6. Deploy backend + reload Nginx
     - name: Deploy backend on VM
       uses: appleboy/ssh-action@v0.1.10
       with:
