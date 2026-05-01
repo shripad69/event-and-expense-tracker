@@ -344,7 +344,7 @@ const AddExpense = () => {
               step="0.01"
             />
             <FormInput
-              label="UPI ID (Optional)"
+              label="UPI ID"
               icon={HiOutlineCash}
               name="upiId"
               value={formData.upiId}

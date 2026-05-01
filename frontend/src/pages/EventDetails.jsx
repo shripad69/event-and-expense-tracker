@@ -17,6 +17,8 @@ import {
   HiOutlineDocumentText,
   HiOutlineUsers,
   HiOutlineTrendingUp,
+  HiOutlineExclamation,
+  HiOutlineShieldCheck,
 } from 'react-icons/hi';
 
 // ------------------------------
@@ -124,6 +126,153 @@ const EmptyExpenses = ({ eventId }) => (
 );
 
 // ------------------------------
+// Budget Dashboard (Manager Only)
+// ------------------------------
+
+const BudgetDashboard = ({ budget, spentAmount, remainingAmount }) => {
+  if (budget == null || budget === 0) return null;
+
+  const percentUsed = Math.min((spentAmount / budget) * 100, 100);
+  const actualPercent = (spentAmount / budget) * 100;
+  const isOverBudget = spentAmount > budget;
+  const isWarning = actualPercent >= 70 && actualPercent < 90;
+  const isDanger = actualPercent >= 90;
+
+  const getStatusColor = () => {
+    if (isOverBudget || isDanger) return 'danger';
+    if (isWarning) return 'warning';
+    return 'safe';
+  };
+
+  const statusColor = getStatusColor();
+
+  const gradientMap = {
+    safe: 'from-emerald-500 to-teal-400',
+    warning: 'from-yellow-500 to-amber-400',
+    danger: 'from-red-500 to-rose-400',
+  };
+
+  const glowMap = {
+    safe: 'shadow-emerald-500/20',
+    warning: 'shadow-yellow-500/20',
+    danger: 'shadow-red-500/20',
+  };
+
+  const bgMap = {
+    safe: 'from-emerald-500/10 to-emerald-500/5',
+    warning: 'from-yellow-500/10 to-yellow-500/5',
+    danger: 'from-red-500/10 to-red-500/5',
+  };
+
+  const textMap = {
+    safe: 'text-emerald-400',
+    warning: 'text-yellow-400',
+    danger: 'text-red-400',
+  };
+
+  const borderMap = {
+    safe: 'border-emerald-500/20',
+    warning: 'border-yellow-500/20',
+    danger: 'border-red-500/20',
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.05, duration: 0.4 }}
+      className="glass-card p-6 sm:p-7 mb-6"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/[0.06]">
+        <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-3">
+          <div className={`bg-gradient-to-br ${bgMap[statusColor]} p-1.5 rounded-lg border ${borderMap[statusColor]}`}>
+            <HiOutlineShieldCheck size={16} className={textMap[statusColor]} />
+          </div>
+          Budget Tracker
+          {isOverBudget && (
+            <span className="badge bg-red-500/20 text-red-300 border border-red-500/30 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+              <HiOutlineExclamation size={10} />
+              Over Budget
+            </span>
+          )}
+        </h2>
+        <span className={`text-xs font-bold ${textMap[statusColor]} tabular-nums`}>
+          {actualPercent.toFixed(1)}% used
+        </span>
+      </div>
+
+      {/* Budget Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className={`budget-stat-card bg-gradient-to-br ${bgMap.safe} border ${borderMap.safe}`}>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Total Budget</p>
+          <p className="text-lg font-bold text-white tabular-nums">₹{budget.toLocaleString()}</p>
+        </div>
+        <div className={`budget-stat-card bg-gradient-to-br ${bgMap[statusColor]} border ${borderMap[statusColor]}`}>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Total Spent</p>
+          <p className={`text-lg font-bold tabular-nums ${textMap[statusColor]}`}>₹{spentAmount.toLocaleString()}</p>
+        </div>
+        <div className={`budget-stat-card bg-gradient-to-br ${isOverBudget ? bgMap.danger : bgMap.safe} border ${isOverBudget ? borderMap.danger : borderMap.safe}`}>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Remaining</p>
+          <p className={`text-lg font-bold tabular-nums ${isOverBudget ? 'text-red-400' : 'text-emerald-400'}`}>
+            {isOverBudget ? '-' : ''}₹{Math.abs(remainingAmount).toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="space-y-2">
+        <div className="budget-progress-track">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${percentUsed}%` }}
+            transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
+            className={`budget-progress-bar bg-gradient-to-r ${gradientMap[statusColor]} shadow-lg ${glowMap[statusColor]}`}
+          />
+        </div>
+        <div className="flex justify-between text-[10px] text-gray-500 font-medium tabular-nums">
+          <span>₹0</span>
+          {!isOverBudget && (
+            <span className={textMap[statusColor]}>
+              ₹{spentAmount.toLocaleString()} spent
+            </span>
+          )}
+          <span>₹{budget.toLocaleString()}</span>
+        </div>
+      </div>
+
+      {/* Warning Alert */}
+      {isDanger && !isOverBudget && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-4 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20"
+        >
+          <HiOutlineExclamation size={16} className="text-yellow-400 flex-shrink-0" />
+          <p className="text-xs text-yellow-300 font-medium">
+            Budget is nearly exhausted — only ₹{remainingAmount.toLocaleString()} remaining ({(100 - actualPercent).toFixed(1)}% left)
+          </p>
+        </motion.div>
+      )}
+      {isOverBudget && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-4 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20"
+        >
+          <HiOutlineExclamation size={16} className="text-red-400 flex-shrink-0" />
+          <p className="text-xs text-red-300 font-medium">
+            Budget exceeded by ₹{Math.abs(remainingAmount).toLocaleString()} — spending is {actualPercent.toFixed(1)}% of the allocated budget
+          </p>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
+// ------------------------------
 // Main Component
 // ------------------------------
 
@@ -161,6 +310,8 @@ const EventDetails = () => {
   const paidCount = expenses.filter((e) => e.status === 'paid').length;
   const pendingCount = expenses.filter((e) => e.status === 'pending').length;
   const approvedCount = expenses.filter((e) => e.status === 'approved').length;
+  const isManager = user?.role === 'manager';
+  const hasBudget = isManager && event.budget != null && event.budget > 0;
 
   const stats = [
     { icon: HiOutlineCalendar, label: 'Date', value: new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), color: 'accent' },
@@ -216,6 +367,15 @@ const EventDetails = () => {
           ))}
         </div>
       </motion.div>
+
+      {/* Budget Dashboard — Manager Only */}
+      {hasBudget && (
+        <BudgetDashboard
+          budget={event.budget}
+          spentAmount={event.spentAmount || 0}
+          remainingAmount={event.remainingAmount ?? (event.budget - (event.spentAmount || 0))}
+        />
+      )}
 
       {/* Expenses Section */}
       <motion.div

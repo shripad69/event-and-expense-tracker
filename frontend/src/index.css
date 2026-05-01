@@ -354,4 +354,38 @@ html.light body {
     background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.04) 75%);
     background-size: 200% 100%;
   }
+
+  /* Budget stat card */
+  .budget-stat-card {
+    @apply rounded-xl p-4 transition-all duration-300;
+  }
+
+  .budget-stat-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Budget progress bar */
+  .budget-progress-track {
+    @apply w-full h-2.5 rounded-full overflow-hidden;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .budget-progress-bar {
+    @apply h-full rounded-full;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Light theme budget overrides */
+  .light .budget-stat-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .light .budget-stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .light .budget-progress-track {
+    background: rgba(0, 0, 0, 0.06);
+  }
 }

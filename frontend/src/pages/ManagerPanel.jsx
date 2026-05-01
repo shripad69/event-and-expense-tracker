@@ -494,6 +494,25 @@ const CreateEventModal = ({ isOpen, onClose, form, setForm, clubs, isSubmitting,
           ))}
         </select>
       </div>
+      <div>
+        <label className="label-text flex items-center gap-1.5 mb-1.5">
+          <HiOutlineCash size={14} className="text-accent-400" />
+          Budget (optional)
+        </label>
+        <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">₹</span>
+          <input
+            type="number"
+            value={form.budget}
+            onChange={(e) => setForm({ ...form, budget: e.target.value })}
+            className="input-glass text-sm pl-8"
+            placeholder="e.g., 50000"
+            min="0"
+            step="100"
+          />
+        </div>
+        <p className="text-[11px] text-gray-500 mt-1.5">Set a budget to track spending against this event</p>
+      </div>
       <div className="flex items-center gap-3 pt-2">
         <motion.button
           whileTap={{ scale: 0.98 }}
@@ -539,7 +558,7 @@ const ManagerPanel = () => {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('pending');
   const [showEventModal, setShowEventModal] = useState(false);
-  const [eventForm, setEventForm] = useState({ title: '', description: '', date: '', clubId: '' });
+  const [eventForm, setEventForm] = useState({ title: '', description: '', date: '', clubId: '', budget: '' });
   const [creating, setCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [eventFilter, setEventFilter] = useState('all');
@@ -612,7 +631,7 @@ const ManagerPanel = () => {
       await api.post('/events', eventForm);
       toast.success('Event created successfully!');
       setShowEventModal(false);
-      setEventForm({ title: '', description: '', date: '', clubId: '' });
+      setEventForm({ title: '', description: '', date: '', clubId: '', budget: '' });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create event');
     } finally {

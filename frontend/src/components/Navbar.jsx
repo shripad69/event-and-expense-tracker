@@ -76,10 +76,10 @@ const Navbar = ({ onToggleSidebar }) => {
         
         <Link to="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-500 to-neon-purple flex items-center justify-center text-white font-bold text-sm shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] group-hover:scale-105 transition-all duration-300">
-            ET
+            $$
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-white via-gray-100 to-accent-200 bg-clip-text text-transparent hidden sm:block tracking-wide">
-            EventTracker
+            Expensify
           </span>
         </Link>
       </div>
