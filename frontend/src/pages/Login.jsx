@@ -158,7 +158,7 @@ const Login = () => {
           className="text-center mb-8"
         >
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-500 to-neon-purple flex items-center justify-center text-white font-bold text-2xl mx-auto mb-5 shadow-glow-purple">
-            ET
+            Ex
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">
             Welcome Back

@@ -290,12 +290,12 @@ const Signup = () => {
           className="text-center mb-8"
         >
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-cyan to-accent-500 flex items-center justify-center text-white font-bold text-2xl mx-auto mb-5 shadow-glow-blue">
-            ET
+            Ex
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-1">
             Create Account
           </h1>
-          <p className="text-gray-400 text-sm font-medium">Join EventTracker today</p>
+          <p className="text-gray-400 text-sm font-medium">Join Expensify today</p>
         </motion.div>
 
         {/* Form */}
