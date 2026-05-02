@@ -41,7 +41,7 @@ exports.createCheckoutSession = async (req, res, next) => {
         expenseId: expense._id.toString(),
         eventId: expense.event?._id?.toString() || '',
       },
-      success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-success?expenseId=${expense._id}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/manager`,
       cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/manager`,
     });
 
