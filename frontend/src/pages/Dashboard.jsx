@@ -390,9 +390,9 @@ const Dashboard = () => {
 
         {/* Bar Chart */}
         <ChartCard title="Event-wise Expenses" delay={0.3}>
-          <div className="flex-1 min-h-[220px] w-full mt-2">
+          <div className="w-full mt-2" style={{ height: 220 }}>
             {barData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <XAxis
                     dataKey="name"
